@@ -6,7 +6,7 @@
 /*   By: njaros <njaros@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 18:28:42 by njaros            #+#    #+#             */
-/*   Updated: 2022/06/28 18:31:39 by njaros           ###   ########lyon.fr   */
+/*   Updated: 2022/06/28 18:42:26 by njaros           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class vector
 
 	public :
 
-		vector( const allocator_type &alloc = allocator_type() )
+		vector( const allocator_type &alloc = allocator_type() ) : value_type(T)
 		{
 
 		}
