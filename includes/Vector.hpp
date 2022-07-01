@@ -6,7 +6,7 @@
 /*   By: njaros <njaros@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 18:28:42 by njaros            #+#    #+#             */
-/*   Updated: 2022/06/28 18:42:26 by njaros           ###   ########lyon.fr   */
+/*   Updated: 2022/07/01 18:28:30 by njaros           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,8 +290,6 @@ class vector
 
 		}
 
-	private :
-
 		T											value_type;
 		Alloc										allocator_type;
 		allocator_type::reference					reference;
@@ -305,35 +303,39 @@ class vector
 		iterator_traits<iterator>::difference_type	difference_type;
 		iterator_traits<iterator>::difference_type	size_type;
 
+	private :
+
+		
+		
 };
 
-template < class T, class Alloc >
-	bool	operation==(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+template < class T, class Alloc = std::allocator<T> >
+	bool	operator==(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
 template < class T, class Alloc >
-	bool	operation!=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator!=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
 template < class T, class Alloc >
-	bool	operation<(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator<(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
 template < class T, class Alloc >
-	bool	operation<=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator<=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
 template < class T, class Alloc >
-	bool	operation>(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator>(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
 template < class T, class Alloc >
-	bool	operation>=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
+	bool	operator>=(const vector<T,Alloc> &lhs, const vector<T,Alloc> &rhs)
 	{
 
 	}
