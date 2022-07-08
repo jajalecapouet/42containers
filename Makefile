@@ -19,10 +19,10 @@ PATH_DEP		=	dep
 PATH_OBJS		=	obj
 PATH_INCLUDES	=	includes
 
-LST_SRCS		=	
+LST_SRCS		=	containers.cpp
 LST_OBJS		=	${LST_SRCS:.cpp=.o}
 LST_DEP			=	${LST_SRCS:.cpp=.d}
-LST_INCLUDES	=	
+LST_INCLUDES	=	Test.hpp
 SRC =		$(addprefix ${PATH_SRCS}/,${LST_SRCS})
 DEP =		$(addprefix ${PATH_DEP}/,${LST_DEP})
 OBJS =		$(addprefix ${PATH_OBJS}/,${LST_OBJS})

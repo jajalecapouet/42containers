@@ -13,7 +13,8 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include <iterator>
+# include <memory>
+# include <new>
 
 namespace ft = std;
 
@@ -299,7 +300,7 @@ class vector
 		value_type::iterator						iterator;
 		const value_type::iterator					const_iterator;
 		reverse_iterator<iterator>					reverse_iterator;
-		reverse_iteratot<const_iterator>			const_reverse_iterator;
+		reverse_iterator<const_iterator>			const_reverse_iterator;
 		iterator_traits<iterator>::difference_type	difference_type;
 		iterator_traits<iterator>::difference_type	size_type;
 
