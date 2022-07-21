@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Test.hpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: njaros <njaros@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/21 14:54:34 by njaros            #+#    #+#             */
+/*   Updated: 2022/07/21 16:14:07 by njaros           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef TEST_HPP
 # define TEST_HPP
 
@@ -8,9 +20,10 @@
 # include <cstring>
 
 /* TASKS LIST
-- throw exception in constructor if n > max_size
-- do the useless const member fonctions
-- do the reverse iterator
+- throw exception in constructor if n > max_size.
+- retype properly all the exceptions.
+- do the useless const member fonctions.
+- do the reverse iterator.
 -
 -
 */
@@ -25,7 +38,6 @@ template < typename T, class Alloc = std::allocator<T> >
 
 class Test
 {
-
 
 	public :
 
@@ -43,10 +55,10 @@ class Test
 
 			public :
 
-				MyIterator ( void ) : _p(0) {}
-				MyIterator ( value_type *ptr ) : _p(ptr) {}
-				MyIterator ( const MyIterator &other ) : _p(other._p) {}
-				~MyIterator ( void ) {}
+				MyIterator( void ) : _p(0) {}
+				MyIterator( value_type *ptr ) : _p(ptr) {}
+				MyIterator( const MyIterator &other ) : _p(other._p) {}
+				~MyIterator( void ) {}
 
 				bool	operator==( const MyIterator &other )
 				{
@@ -176,7 +188,7 @@ class Test
 
 		Test( void ) : _firstPtr(0), _size(0), _capacity(0) {}
 
-		Test(size_type n, value_type val) :	_firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
+		Test( size_type n, value_type val ) :	_firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
 		{
 			size_type	idx;
 			_ptr = _firstPtr;
@@ -189,7 +201,7 @@ class Test
 			}
 		}
 
-		Test(size_type n) : _firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
+		Test( size_type n ) : _firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
 		{
 			memset(_firstPtr, 0, n * sizeof(value_type));
 		}
@@ -341,33 +353,32 @@ class Test
 
 // MODIFIERS
 
-		Test	&operator=( Test const &other )
+		Test		&operator=( Test const &other )
 		{
 			size_type	idx;
-			iterator	it;
 
 			this->reserve(other._size);
 			_ptr = _firstPtr;
 			idx = 0;
-			it = other.begin();
+			_it = other.begin();
 			while (idx < _size)
 			{
 				_alloc.destroy(_ptr);
-				if (it != other.end())
+				if (_it != other.end())
 				{
-					_alloc.construct(_ptr, *it);
-					it++;
+					_alloc.construct(_ptr, *_it);
+					_it++;
 				}
 				_ptr++;
 				idx++;
 			}
-			while (it != other.end())
-				_alloc.construct(_ptr++, *(it++));
+			while (_it != other.end())
+				_alloc.construct(_ptr++, *(_it++));
 			_size = other._size;
 			return (*this);
 		}
 		template < class InputIterator >
-		void	assign( InputIterator first, InputIterator last )
+		void		assign( InputIterator first, InputIterator last )
 		{
 			size_type	s;
 			size_type	idx;
@@ -395,7 +406,7 @@ class Test
 				_alloc.construct(_ptr++, *(first++));
 			_size = s;
 		}
-		void	assign( size_type n, const value_type &val )
+		void		assign( size_type n, const value_type &val )
 		{
 			size_type	idx;
 
@@ -414,29 +425,112 @@ class Test
 			while (idx++ < _size)
 				_alloc.construct(_ptr++, val);
 		}
-		void	push_back( const value_type &val )
+		void		push_back( const value_type &val )
 		{
 			checkCapacityAvailable(1);
 			_alloc.construct(&_firstPtr[_size], val);
 			_size += 1;
 		}
-		void	pop_back( void )
+		void		pop_back( void )
 		{
 			_size -= 1;
 			_alloc.destroy(&_firstPtr[_size]);
 		}
-		void	insert( MyIterator position, const value_type &val )
+		void		insert( MyIterator position, const value_type &val )
 		{
 			_ptr = &(*position);
 			checkCapacityAvailable(1);
-			copyBlock( position, this->end(), position + 1 );
+			copyBlock(position, this->end(), position + 1);
 			_alloc.destroy(_ptr);
 			_alloc.construct(_ptr, val);
+			_size += 1;
+		}
+		void		insert( MyIterator position, size_type n, const value_type &val )
+		{
+			_it = position + n;
+			checkCapacityAvailable(n);
+			copyBlock(position, this->end(), position + n);
+			while (position != _it)
+			{
+				_alloc.destroy(&(*position));
+				_alloc.construct(&(*position), val);
+				position++;
+			}
+			size += n;
 		}
 		template < class InputIterator >
-		void	insert( MyIterator position, InputIterator first, InputIterator last )
+		void		insert( MyIterator position, InputIterator first, InputIterator last )
 		{
+			size_type	addSize;
 
+			if (first >= last)
+				throw ("last must be higher than first.");
+			addSize = last - first;
+			_it = position + addSize;
+			checkCapacityAvailable(addSize);
+			copyBlock(position, this->end(), position + addSize);
+			while (first != last)
+			{
+				_alloc.destroy(&(*position));
+				_alloc.construct(&(*position), *first);
+				first++;
+				position++;
+			}
+			size += addSize;
+		}
+		iterator	erase( iterator position )
+		{
+			if (position < this->begin() || position >= this->end())
+				throw ("erase : the iterator you gave is out of border");
+			_alloc.destroy(&(*position));
+			copyBlock(position + 1, this->end(), position);
+			_size -= 1;
+			if (position != this->end())
+				_alloc.destroy(&(*this->end()));
+			return (position);
+		}
+		iterator	erase( iterator first, iterator last )
+		{
+			size_type	delSize;
+
+			if (first >= last)
+				throw ("erase : last must be higher than first.");
+			if (first < this->begin())
+				throw ("erase : the iterator 'first' you gave is out of border");
+			if (last > this->end())
+				throw ("erase : the iterator 'last' you gave is out of border");
+			delSize = last - first;
+			_it = first;
+			while (_it != last)
+			{
+				_alloc.destroy(&(*_it));
+				_it++;
+			}
+			copyBlock(last, this->end(), first);
+			_it = this->end() - 1;
+			_size -= delSize;
+			if (first != this->end())
+			{
+				while (delSize--)
+					_alloc.destroy(&(*_it--));
+			}
+			return (first);
+		}
+		void		swap( Test &other )
+		{
+			Test	tmp(this);
+
+			this = other;
+			other = tmp;
+		}
+
+// ALLOCATOR
+
+		allocator_type	get_allocator( void )	const
+		{
+			allocator_type	copy(_alloc);
+
+			return (copy);
 		}
 
 	private :
@@ -483,5 +577,81 @@ class Test
 		}
 
 };
+
+// NON MEMBERS OPERATIONS
+
+template < class T, class Alloc >
+bool	operator==(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+{
+	std::Test<T>::iterator itL;
+	std::Test<T>::iterator itR;
+
+	if (lhs.size() != rhs.size())
+		return (0);
+	itL = lhs.begin();
+	itR = rhs.begin();
+	while (itL != lhs.end())
+	{
+		if (*itL != *itR)
+			return (0);
+		itL++;
+		itR++;
+	}
+	return (1);
+}
+
+template < class T, class Alloc >
+bool	operator!=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs == rhs));}
+
+template < class T, class Alloc >
+bool	operator<(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+{
+	std::Test<T>::iterator itL;
+	std::Test<T>::iterator itR;
+
+	itL = lhs.begin();
+	itR = rhs.begin();
+	while (itL != lhs.end() && itR != rhs.end())
+	{
+		if (*itL != *itR)
+			return (*itL < *itR);
+		itR++;
+		itL++;
+	}
+	return (lhs.size() < rhs.size());
+}
+
+template < class T, class Alloc >
+bool	operator>=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs < rhs));}
+
+template < class T, class Alloc >
+bool	operator>(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+{
+	std::Test<T>::iterator itL;
+	std::Test<T>::iterator itR;
+
+	itL = lhs.begin();
+	itR = rhs.begin();
+	while (itL != lhs.end() && itR != rhs.end())
+	{
+		if (*itL != *itR)
+			return (*itL > *itR);
+		itR++;
+		itL++;
+	}
+	return (lhs.size() > rhs.size());
+}
+
+template < class T, class Alloc >
+bool	operator<=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs > rhs));}
+
+template < class T, class Alloc >
+void	swap(Test<T, Alloc>& x, Test<T, Alloc>& y)
+{
+	Test<T>	tmp(x);
+
+	x = y;
+	y = tmp;
+}
 
 #endif
