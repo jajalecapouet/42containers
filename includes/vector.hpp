@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Test.hpp                                           :+:      :+:    :+:   */
+/*   vector.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: njaros <njaros@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 14:54:34 by njaros            #+#    #+#             */
-/*   Updated: 2022/07/21 16:14:07 by njaros           ###   ########lyon.fr   */
+/*   Updated: 2022/07/22 16:05:10 by njaros           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TEST_HPP
-# define TEST_HPP
+#ifndef vector_HPP
+# define vector_HPP
 
 # include <memory>
 # include <new>
 # include <iterator>
 # include <cstddef>
 # include <cstring>
+# include <iostream>
 
 /* TASKS LIST
 - throw exception in constructor if n > max_size.
@@ -34,9 +35,12 @@ class	InvalidIndexException : public std::exception
 				char const	*what( void ) const throw() { return ("This index is out of border."); }
 		};
 
+namespace ft
+{
+
 template < typename T, class Alloc = std::allocator<T> >
 
-class Test
+class vector
 {
 
 	public :
@@ -186,9 +190,9 @@ class Test
 
 		typedef MyIterator	iterator;
 
-		Test( void ) : _firstPtr(0), _size(0), _capacity(0) {}
+		vector( void ) : _firstPtr(0), _size(0), _capacity(0) {}
 
-		Test( size_type n, value_type val ) :	_firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
+		vector( size_type n, value_type val ) :	_firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
 		{
 			size_type	idx;
 			_ptr = _firstPtr;
@@ -201,13 +205,13 @@ class Test
 			}
 		}
 
-		Test( size_type n ) : _firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
+		vector( size_type n ) : _firstPtr(_alloc.allocate(n, 0)), _size(n), _capacity(n)
 		{
 			memset(_firstPtr, 0, n * sizeof(value_type));
 		}
 
 		template < class InputIterator >
-		Test( InputIterator first, InputIterator last )
+		vector( InputIterator first, InputIterator last )
 		{
 			if (first >= last)
 				throw ("last must be higher than first.");
@@ -225,7 +229,7 @@ class Test
 			}
 		}
 
-		Test( const Test &other ) : _firstPtr(_alloc.allocate(other._size, 0)), _size(other._size), _capacity(other._size)
+		vector( const vector &other ) : _firstPtr(_alloc.allocate(other._size, 0)), _size(other._size), _capacity(other._size)
 		{
 			_it = other.begin();
 			_ptr = _firstPtr;
@@ -237,7 +241,7 @@ class Test
 			}
 		}
 
-		~Test( void )
+		~vector( void )
 		{
 			_alloc.deallocate(_firstPtr, _size);
 		}
@@ -284,6 +288,7 @@ class Test
 				{
 					_alloc.allocate(_size - _capacity, &_firstPtr[_capacity - 1]);
 					memset(&_ptr[_capacity], 0, (_size - _capacity) * sizeof(value_type));
+					std::cout<< "pouet" << std::endl;
 					_capacity = _size;
 				}
 			}
@@ -303,7 +308,7 @@ class Test
 			}
 			else
 			{
-				if (n > capacity)
+				if (n > _capacity)
 				{
 					_alloc.allocate(n - _capacity, &_firstPtr[_capacity - 1]);
 					_capacity = n;
@@ -353,7 +358,7 @@ class Test
 
 // MODIFIERS
 
-		Test		&operator=( Test const &other )
+		vector		&operator=( vector const &other )
 		{
 			size_type	idx;
 
@@ -456,7 +461,7 @@ class Test
 				_alloc.construct(&(*position), val);
 				position++;
 			}
-			size += n;
+			_size += n;
 		}
 		template < class InputIterator >
 		void		insert( MyIterator position, InputIterator first, InputIterator last )
@@ -476,7 +481,7 @@ class Test
 				first++;
 				position++;
 			}
-			size += addSize;
+			_size += addSize;
 		}
 		iterator	erase( iterator position )
 		{
@@ -516,9 +521,9 @@ class Test
 			}
 			return (first);
 		}
-		void		swap( Test &other )
+		void		swap( vector &other )
 		{
-			Test	tmp(this);
+			vector	tmp(this);
 
 			this = other;
 			other = tmp;
@@ -581,10 +586,10 @@ class Test
 // NON MEMBERS OPERATIONS
 
 template < class T, class Alloc >
-bool	operator==(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+bool	operator==(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 {
-	std::Test<T>::iterator itL;
-	std::Test<T>::iterator itR;
+	typename ft::vector<T>::iterator itL;
+	typename ft::vector<T>::iterator itR;
 
 	if (lhs.size() != rhs.size())
 		return (0);
@@ -601,13 +606,13 @@ bool	operator==(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
 }
 
 template < class T, class Alloc >
-bool	operator!=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs == rhs));}
+bool	operator!=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)	{return (!(lhs == rhs));}
 
 template < class T, class Alloc >
-bool	operator<(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+bool	operator<(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 {
-	std::Test<T>::iterator itL;
-	std::Test<T>::iterator itR;
+	typename ft::vector<T>::iterator itL;
+	typename ft::vector<T>::iterator itR;
 
 	itL = lhs.begin();
 	itR = rhs.begin();
@@ -622,13 +627,13 @@ bool	operator<(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
 }
 
 template < class T, class Alloc >
-bool	operator>=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs < rhs));}
+bool	operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)	{return (!(lhs < rhs));}
 
 template < class T, class Alloc >
-bool	operator>(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
+bool	operator>(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 {
-	std::Test<T>::iterator itL;
-	std::Test<T>::iterator itR;
+	typename ft::vector<T>::iterator itL;
+	typename ft::vector<T>::iterator itR;
 
 	itL = lhs.begin();
 	itR = rhs.begin();
@@ -643,15 +648,17 @@ bool	operator>(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)
 }
 
 template < class T, class Alloc >
-bool	operator<=(const Test<T, Alloc>& lhs, const Test<T, Alloc>& rhs)	{return (!(lhs > rhs));}
+bool	operator<=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)	{return (!(lhs > rhs));}
 
 template < class T, class Alloc >
-void	swap(Test<T, Alloc>& x, Test<T, Alloc>& y)
+void	swap(ft::vector<T, Alloc>& x, ft::vector<T, Alloc>& y)
 {
-	Test<T>	tmp(x);
+	ft::vector<T>	tmp(x);
 
 	x = y;
 	y = tmp;
+}
+
 }
 
 #endif

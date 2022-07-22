@@ -6,13 +6,15 @@
 /*   By: njaros <njaros@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:16:37 by njaros            #+#    #+#             */
-/*   Updated: 2022/07/21 17:40:27 by njaros           ###   ########lyon.fr   */
+/*   Updated: 2022/07/22 16:07:45 by njaros           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PAIR_HPP
 # define PAIR_HPP
 
+namespace ft
+{
 
 template < class T1, class T2 >
 
@@ -69,4 +71,5 @@ bool operator>= (const Pair<T1,T2>& lhs, const Pair<T1,T2>& rhs)
 template < class T1, class T2 >
 Pair< T1, T2 >	Make_pair(T1 x, T2 y)	{return (Pair<T1, T2>(x, y));}
 
+}
 #endif

@@ -1,9 +1,7 @@
-#include "../includes/Test.hpp"
+#include "../includes/vector.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
-
-namespace ft = std;
 
 template < typename T >
 void	displayInfo( T &container, std::string name )
@@ -16,36 +14,36 @@ void	displayInfo( T &container, std::string name )
 int main(void)
 {
 
-	std::cout << std::endl << "<------- Class Test ------->" << std::endl << std::endl;
+	std::cout << std::endl << "<------- Class vector ------->" << std::endl << std::endl;
 
-	Test<std::string>	a(7, "pouet");
-	Test<int>			b(9);
-	a[0] = "123";
-	a[1] = "444";
-	a[2] = "321";
-	Test<std::string>::iterator it;
+	ft::vector<int>	a(7, 3);
+	ft::vector<int>	b(9);
+	a[0] = 1;
+	a[1] = 2;
+	a[2] = 3;
+	ft::vector<int>::iterator it;
 
 	b[3] = 8;
 	b.resize(2);
 	b.resize(4);
 	b.resize(80);
-	displayInfo<Test<int> >(b, "b");
+	std::cout<< "pouet" << std::endl;
+	displayInfo<ft::vector<int> >(b, "b");
 	std::cout << b[30] << std::endl;
 	it = a.begin();
 	std::cout << "a.begin() = " << (*it) << std::endl;
 	std::cout << "it[1] = " << it[1] << std::endl;
 	it = a.end();
 	std::cout << "a.end() - 1 = " << (*(--it)) << std::endl;
-	std::cout << "strlen = " << it->length() << std::endl;
 	try
 	{
-		Test<std::string>	b(it, a.begin());
+		ft::vector<int>	c(it, a.begin());
 	}
 	catch(const char* &e)
 	{
 		std::cerr << e << std::endl;
 	}
-	displayInfo<Test<std::string> >(a, "a");
+	displayInfo<ft::vector<int> >(a, "a");
 
 	std::cout << std::endl << "<------- True vector ------->" << std::endl << std::endl;
 
